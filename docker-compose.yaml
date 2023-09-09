@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  # Сервис API
+  api:
+    image: node:18-alpine
+    container_name: fts-node
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=development
+      - NODE_PORT=3200
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: npm run start:dev 
+    links:
+      - sequelize
+    depends_on:
+      - sequelize
+    networks:
+      - ftsnet
+
+  sequelize:
+    container_name: fts-sequelize
+    image: postgres
+    restart: always
+    environment:
+      PGDATA: /var/lib/postgresql/data/fts
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fts
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - ftsnet
+
+  adminer:
+    container_name: fts-adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - sequelize
+    networks:
+      - ftsnet
+
+volumes: 
+  pgdata:
+
+networks: 
+  ftsnet:
