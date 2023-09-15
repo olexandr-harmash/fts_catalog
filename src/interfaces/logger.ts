@@ -1,4 +1,4 @@
-export default interface Logger {
+export interface Logger {
     info: (...args: any[]) => void;
     warn: (...args: any[]) => void;
     silly: (...args: any[]) => void;

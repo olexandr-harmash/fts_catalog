@@ -19,7 +19,7 @@ export default class Command extends BaseApp implements IApp {
         try {
             switch (command) {
                 case 'db:create':
-                    await this._database.sync({ force: false });
+                    await this._database.sequelize.sync({ force: false });
                     break;
                 default:
                     throw new Error(`Invalid command ${command}`);

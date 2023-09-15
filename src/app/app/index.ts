@@ -5,6 +5,10 @@ import { ServerInitializer } from "../../infra/http/server/initialize";
 import { ServerListener } from "../../infra/http/server/listen";
 import { Server } from "../../infra/http/server";
 import { AppConfig as TAppConfig } from "../../types/app";
+import { PropositionService } from "../../services";
+import { PropositionRepository } from "../../repository";
+import { PropositionController } from "../../controllers/proposition";
+import { PropositionRouter } from "../../infra/http/v1/router/proposition";
 
 export default class App extends BaseApp implements IApp {
     public readonly express: Express.Application;
@@ -19,10 +23,16 @@ export default class App extends BaseApp implements IApp {
 
     public async Init(): Promise<void> {
         try {
-            await this._database.authenticate();
+            await this._database.sequelize.authenticate();
 
-            await this._server.Init();
-            
+            const repo = new PropositionRepository();
+            const service = new PropositionService(repo);
+            const controller = new PropositionController(service);
+
+            const router = new PropositionRouter(controller).Rest();
+
+            await this._server.Init(router);
+
             this._logger.info('App was initialized completely.');
         } catch (error) {
             this._logger.error('App returned during initialize.', error);

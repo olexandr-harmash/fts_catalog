@@ -4,11 +4,11 @@ import fs from "fs";
 import * as winston from 'winston';
 import { format } from 'util';
 import moment from 'moment';
-import ILogger from "../../interfaces/logger";
+import { Logger } from "../../interfaces/logger";
 import { LoggerConfig as TLoggerConfig } from "../../types/logger";
 
 export class CustomLogger {
-    protected _logger: ILogger;
+    protected _logger: Logger;
     protected _dateFormat: string;
 
     constructor(config: TLoggerConfig) {

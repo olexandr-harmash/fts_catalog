@@ -1,3 +1,3 @@
 export interface App {
-    Init (): Promise<void>;
+    Init (...args: any[]): Promise<void>;
 }

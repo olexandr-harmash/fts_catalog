@@ -9,14 +9,14 @@ import { ServerConfig as TServerConfig } from "../../../types/server";
 import { ServerInitializer } from "../../../infra/http/server/initialize";
 import { ServerListener } from "./listen";
 import { Base } from "../../../app/base";
-import ILogger from "../../../interfaces/logger";
+import { Logger } from "../../../interfaces/logger";
 
 export class Server extends Base implements IApp {
     public readonly express: Express.Application;
 
     protected _server: Http.Server | Https.Server;
 
-    constructor(config: TServerConfig, logger: ILogger) {
+    constructor(config: TServerConfig, logger: Logger) {
         super(config);
 
         this._logger = logger;
@@ -39,8 +39,10 @@ export class Server extends Base implements IApp {
         );
     };
 
-    public async Init() {
+    public async Init(router: Express.Router) {
         this._server = await this.ServerInitializer();
+
+        this.express.use(router);
 
         await this.ServerListener();
     }
